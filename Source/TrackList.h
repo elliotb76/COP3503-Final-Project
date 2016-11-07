@@ -7,19 +7,19 @@ using std::string;
 
 class Track
 {
-	//this is an array of the actual metadata, it is instantiated as an array of null pointers
-	void** metadataArr = nullptr;
-	//this is an array of labels for every metadata entry
-	const string metadataLabelArr[METADATA_SIZE] =
-	{ "id", "address", "title", "artist", "year" };
+	//this is an array of the actual metadata
+	string* metadataArr = nullptr;
+	//this is an array of labels for every metadata entry, it is static and constant and don't touch it. I only barely understand why it is the way it is.
+	//It is initialized in the cpp but declared in the header
+	static const string metadataLabelArr[METADATA_SIZE];
 
 public:
 	Track() { /* literally nothing  */ }
-	Track(void* newMetadataArr[METADATA_SIZE]);
+	Track(string newMetadataArr[METADATA_SIZE]);
 
-	void* getMetadata(string metadataLabel);
-	void setMetadata(string metadataLabel, void* newData);
-	int indexOfThisMetadata(string metadataLabel);			//This function will hold the code to search metadata
+	string getMetadata(string metadataLabel);
+	void setMetadata(string metadataLabel, string newData);
+	int static indexOfThisMetadata(string metadataLabel);			//This function will hold the code to search metadata
 };
 
 //A structure is a class with default public fields. It is used for classes that would only hold data without having any functions

@@ -6,7 +6,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace TrackListTest
 {		
-	TEST_CLASS(UnitTest1)
+	TEST_CLASS(TrackListTesting)
 	{
 	public:
 		
@@ -89,6 +89,37 @@ namespace TrackListTest
 			Assert::IsTrue(testList.GetTrack(2) == pseudoTestTrack);
 		}
 
+
+	};
+
+	TEST_CLASS(TrackTesting)
+	{
+	public:
+		TEST_METHOD(Constructor_NewTrackFromMetadata_MetadataIsStored)
+		{
+			string metadataArr[5] = { "1","2","3","4","5" };
+			Track testTrack = Track(metadataArr);
+			
+			Assert::AreEqual(testTrack.getMetadata("id"), string("1"));
+			Assert::AreEqual(testTrack.getMetadata("title"), string("3"));
+		}
+
+		TEST_METHOD(SetMetadata_ChangeMetadata_MetadataIsChanged)
+		{
+			string metadataArr[5] = { "1","2","3","4","5" };
+			Track testTrack = Track(metadataArr);
+
+			Assert::AreEqual(testTrack.getMetadata("address"), string("2"));
+
+			testTrack.setMetadata("address", "7");
+
+			Assert::AreEqual(testTrack.getMetadata("address"), string("7"));
+		}
+
+		TEST_METHOD(IndexOfThisMetadata_FindIndexOfThisMetadata_MetadataIndexIsCorrect)
+		{
+			Assert::IsTrue(Track::indexOfThisMetadata("id") == 0);
+		}
 
 	};
 }

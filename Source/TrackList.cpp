@@ -1,4 +1,5 @@
 #include "TrackList.h"
+const string Track::metadataLabelArr[METADATA_SIZE] = { "id", "address", "title", "artist", "year" };
 
 Node::Node(Track * newData)
 {
@@ -14,18 +15,18 @@ Node::Node(Track* newData, Node* nextNode)
 
 
 
-Track::Track(void* newMetadataArr[METADATA_SIZE])
+Track::Track(string newMetadataArr[METADATA_SIZE])
 {
 	metadataArr = newMetadataArr;
 }
 
-void* Track::getMetadata(string metadataLabel)
+string Track::getMetadata(string metadataLabel)
 {
 	int index = indexOfThisMetadata(metadataLabel);
 	return metadataArr[index];
 }
 
-void Track::setMetadata(string metadataLabel, void* data)
+void Track::setMetadata(string metadataLabel, string data)
 {
 	int index = indexOfThisMetadata(metadataLabel);
 	metadataArr[index] = data;
@@ -37,7 +38,7 @@ int Track::indexOfThisMetadata(string metadataLabel)
 	//iterate through metadataTypeArr
 	for (int i = 0; i <= METADATA_SIZE; i++)
 	{
-		if (metadataLabel.compare(metadataLabelArr[i]))
+		if (metadataLabel.compare(metadataLabelArr[i]) == 0)
 			return i;
 	}
 	
