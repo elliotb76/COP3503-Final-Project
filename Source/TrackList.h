@@ -5,18 +5,6 @@
 using std::string;
 
 
-//A structure is a class with default public fields. It is used for classes that would only hold data without having any functions
-struct Node
-{
-	//Each node holds a void pointer and two node pointers, this allows navigation backward in the list, which makes it esier to navigate a playlist
-	void* data;
-	Node* previous;
-	Node* next;
-
-	Node(void* newData, Node* previousNode, Node* nextNode);
-
-};
-
 class Track
 {
 	//this is an array of the actual metadata, it is instantiated as an array of null pointers
@@ -28,21 +16,37 @@ class Track
 public:
 	Track() { /* literally nothing  */ }
 	Track(void* newMetadataArr[METADATA_SIZE]);
+
 	void* getMetadata(string metadataLabel);
 	void setMetadata(string metadataLabel, void* newData);
 	int indexOfThisMetadata(string metadataLabel);			//This function will hold the code to search metadata
+};
+
+//A structure is a class with default public fields. It is used for classes that would only hold data without having any functions
+struct Node
+{
+	//Each node holds a track pointer and a node pointer
+	Track* data;
+	Node* next;
+
+	Node(Track* newData);
+	Node(Track* newData, Node* nextNode);
+
 };
 
 class TrackList
 {
 	Node* first_;
 	Node* last_;
-	Node* current_;
 
-	int currentIndex_;
 	int size_;
 
 public:
 	TrackList();
 	TrackList(Track* newTrack);
+
+	void AddTrack(Track* newTrack);
+	void AddTrack(Track* newTrack, int index);
+	void RemoveTrack(int index);
+	Track* GetTrack(int index);
 };
