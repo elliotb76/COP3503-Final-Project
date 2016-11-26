@@ -4,14 +4,15 @@
 #include <string>
 using std::string;
 
-
 class Track
 {
 	//this is an array of the actual metadata
-	string* metadataArr = nullptr;
+	string* metadataArr_ = nullptr;
+	//Used to identify tracks while indexed
+	int trackID_;
 	//this is an array of labels for every metadata entry, it is static and constant and don't touch it. I only barely understand why it is the way it is.
 	//It is initialized in the cpp but declared in the header
-	static const string metadataLabelArr[METADATA_SIZE];
+	static const string metadataLabelArr_[METADATA_SIZE];
 
 public:
 	Track() { /* literally nothing  */ }
@@ -19,7 +20,14 @@ public:
 
 	string getMetadata(string metadataLabel);
 	void setMetadata(string metadataLabel, string newData);
-	int static indexOfThisMetadata(string metadataLabel);			//This function will hold the code to search metadata
+	
+	int getTrackID() { return trackID_; }
+	void setTrackID(int trackID) { trackID_ = trackID; }
+
+	int indexOfThisMetadata(string metadataLabel);
+	string labelOfThisIndex(int index);
+	int metadataSize() { return METADATA_SIZE; }
+
 };
 
 //A structure is a class with default public fields. It is used for classes that would only hold data without having any functions
@@ -42,11 +50,13 @@ class TrackList
 	int size_;
 
 public:
-	TrackList();
-	TrackList(Track* newTrack);
+	TrackList(string newName);
+	TrackList(string newName, Track* newTrack);
 
 	void AddTrack(Track* newTrack);
 	void AddTrack(Track* newTrack, int index);
 	void RemoveTrack(int index);
 	Track* GetTrack(int index);
+	int Size() { return size_; }
+	string name;
 };
