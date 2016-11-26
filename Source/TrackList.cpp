@@ -1,5 +1,5 @@
 #include "TrackList.h"
-const string Track::metadataLabelArr[METADATA_SIZE] = { "id", "address", "title", "artist", "year" };
+const string Track::metadataLabelArr_[METADATA_SIZE] = { "id", "address", "title", "artist", "year" };
 
 Node::Node(Track * newData)
 {
@@ -17,19 +17,19 @@ Node::Node(Track* newData, Node* nextNode)
 
 Track::Track(string newMetadataArr[METADATA_SIZE])
 {
-	metadataArr = newMetadataArr;
+	metadataArr_ = newMetadataArr;
 }
 
 string Track::getMetadata(string metadataLabel)
 {
 	int index = indexOfThisMetadata(metadataLabel);
-	return metadataArr[index];
+	return metadataArr_[index];
 }
 
 void Track::setMetadata(string metadataLabel, string data)
 {
 	int index = indexOfThisMetadata(metadataLabel);
-	metadataArr[index] = data;
+	metadataArr_[index] = data;
 }
 
 //This will take in a string and return the index of said metadata in the metadataArr
@@ -38,26 +38,33 @@ int Track::indexOfThisMetadata(string metadataLabel)
 	//iterate through metadataTypeArr
 	for (int i = 0; i <= METADATA_SIZE; i++)
 	{
-		if (metadataLabel.compare(metadataLabelArr[i]) == 0)
+		if (metadataLabel.compare(metadataLabelArr_[i]) == 0)
 			return i;
 	}
 	
 	return -1; //return -1 so that if the function fails it can be easily identified
 }
 
-
-
-
-
-TrackList::TrackList()
+string Track::labelOfThisIndex(int index)
 {
+	return metadataLabelArr_[index];
+}
+
+
+
+
+
+TrackList::TrackList(string newName)
+{
+	name_ = newName;
 	first_ = nullptr;
 	last_ = nullptr;
 	size_ = 0;
 }
 
-TrackList::TrackList(Track* newTrack)
+TrackList::TrackList(string newName, Track* newTrack)
 {
+	name_ = newName;
 	first_ = new Node(newTrack);
 	last_ = first_;
 	size_ = 1;
