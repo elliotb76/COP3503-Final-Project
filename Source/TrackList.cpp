@@ -128,6 +128,7 @@ void TrackList::AddTrack(Track * newTrack, int index)
 	size_++;
 }
 
+//This is a list of tracks
 void TrackList::RemoveTrack(int index)
 {
 	//Make sure input is in acceptable bounds
