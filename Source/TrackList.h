@@ -24,7 +24,7 @@ public:
 	int getTrackID() { return trackID_; }
 	void setTrackID(int trackID) { trackID_ = trackID; }
 
-	int indexOfThisMetadata(string metadataLabel);
+	static int indexOfThisMetadata(string metadataLabel);
 	string labelOfThisIndex(int index);
 	int metadataSize() { return METADATA_SIZE; }
 

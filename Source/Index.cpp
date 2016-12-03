@@ -14,7 +14,7 @@ void Index::initiateIndexFromConfig()
 	ifstream config(CONFIG_FILE);
 	string currentLine = NULL;
 
-	if (!config.good)
+	if (!config.good())
 		return;
 
 	//define the easy ones
@@ -76,13 +76,18 @@ void Index::writeFieldsToConfig()
 
 void Index::RemoveDirectory(string rmDirectory)
 {
-	for (int i = 0; i < directories_.size; i++)
+	for (unsigned int i = 0; i < directories_.size(); i++)
 	{
 		if (directories_[i].compare(rmDirectory) == 0)
 		{
-			directories_.erase[i];
+			directories_.erase(directories_.begin()+i);
 		}
 	}
+}
+
+TrackList * Index::ReadMainIndex()
+{
+	return nullptr;
 }
 
 vector<TrackList> Index::ReadTrackListIndex()
@@ -131,23 +136,32 @@ void Index::WriteTrackListIndex(vector<TrackList> tListV)
 	{
 		trackListIndexFile << "TrackList" << endl << currentList.name << endl;
 
-		for (int i = 0; i < currentList.Size; i++)
+		for (int i = 0; i < currentList.Size(); i++)
 		{
 			currentTrack = currentList.GetTrack(i);
-			trackListIndexFile << currentTrack->getTrackID << endl;
+			trackListIndexFile << currentTrack->getTrackID() << endl;
 		}
 
 		trackListIndexFile << "/TrackList";
 	}
 }
 
+void Index::WriteTrackIndex()
+{
+}
+
 void Index::UpdateTrackIndex()
 {
 	ifstream inDex(trackIndexLocation_);
 	
-	if (!inDex.good)
+	if (!inDex.good())
 	{
 		WriteTrackIndex();
 		return;
 	}
+}
+
+TrackList Index::TrackListFromIDList(vector<int>)
+{
+	return TrackList("main");
 }

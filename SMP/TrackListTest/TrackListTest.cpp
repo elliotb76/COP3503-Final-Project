@@ -1,8 +1,29 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
+#include<iostream>
+#include <sstream>
+#include<string>
+#include<Windows.h>
+#include <Mmsystem.h>
+#include <mciapi.h>
+using namespace std;
+#pragma comment(lib, "Winmm.lib")
 #include "..\..\Source\TrackList.cpp"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+std::wstring s2ws(const std::string& s)
+{
+	int len;
+	int slength = (int)s.length() + 1;
+	len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0);
+	wchar_t* buf = new wchar_t[len];
+	MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
+	std::wstring r(buf);
+	delete[] buf;
+	return r;
+}
+
 
 namespace TrackListTest
 {		
@@ -20,7 +41,7 @@ namespace TrackListTest
 		TEST_METHOD(Constructor_InstantiateWithNullTrack_DataEqualsInput)
 		{
 			Track* testTrack = (Track*)5;
-			TrackList testList = TrackList(testTrack);
+			TrackList testList("test",testTrack);
 			
 			Assert::IsTrue(testList.GetTrack(0) == testTrack);
 		}
@@ -28,7 +49,7 @@ namespace TrackListTest
 		TEST_METHOD(AddTrack_AddNullTrack_DataEqualsInput)
 		{
 			Track* testTrack = (Track*)5;
-			TrackList testList = TrackList();
+			TrackList testList = TrackList("test");
 			testList.AddTrack(testTrack);
 
 			Assert::IsTrue(testList.GetTrack(0) == testTrack);
@@ -37,7 +58,7 @@ namespace TrackListTest
 		TEST_METHOD(AddTrack_AddManyNullTracks_DataEqualsInput)
 		{
 			Track* testTrack = (Track*)5;
-			TrackList testList = TrackList();
+			TrackList testList = TrackList("test");
 			testList.AddTrack(testTrack, 0);
 			testList.AddTrack(testTrack, 1);
 			testList.AddTrack(testTrack, 2);
@@ -50,7 +71,7 @@ namespace TrackListTest
 		{
 			Track* testTrack = (Track*)5;
 			Track* pseudoTestTrack = (Track*)6;
-			TrackList testList = TrackList();
+			TrackList testList = TrackList("test");
 			testList.AddTrack(pseudoTestTrack);
 			testList.AddTrack(pseudoTestTrack);
 			testList.AddTrack(pseudoTestTrack);
@@ -63,7 +84,7 @@ namespace TrackListTest
 		TEST_METHOD(GetTrack_AddATonOfTracks_DataIsReturnedQuickly)
 		{
 			Track* testTrack = (Track*)5;
-			TrackList testList = TrackList();
+			TrackList testList = TrackList("test");
 
 			for (int i = 0; i < 10000; i++)
 			{
@@ -77,7 +98,7 @@ namespace TrackListTest
 		{
 			Track* testTrack = (Track*)5;
 			Track* pseudoTestTrack = (Track*)6;
-			TrackList testList = TrackList();
+			TrackList testList = TrackList("test");
 			testList.AddTrack(pseudoTestTrack);
 			testList.AddTrack(pseudoTestTrack);
 			testList.AddTrack(testTrack);
@@ -121,5 +142,25 @@ namespace TrackListTest
 			Assert::IsTrue(Track::indexOfThisMetadata("id") == 0);
 		}
 
+	};
+
+	TEST_CLASS(MusicPlayerTesting)
+	{
+	public:
+		TEST_METHOD(SlackPostedCode_MakesSound)
+		{
+			//L"open \" + file path and name + \"....
+			string locationOfMusic = "C:\\Users\\Centurion\\Downloads\\Harambe.mp3";
+			ostringstream os;
+			os << "open \"" << locationOfMusic << "\" type MPEGvideo alias song1";
+
+			wstring fullInput = s2ws(os.str());
+
+			LPCWSTR a = fullInput.c_str();
+			mciSendString(a, NULL, 0, NULL);
+			int error2;
+			LPCWSTR b = L"play song1";
+			error2 = mciSendString(b, NULL, 0, NULL);
+		}
 	};
 }
