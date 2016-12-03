@@ -1,5 +1,5 @@
 #include "TrackList.h"
-const string Track::metadataLabelArr_[METADATA_SIZE] = { "id", "address", "title", "artist", "year" };
+const string Track::metadataLabelArr_[METADATA_SIZE] = { "id", "location", "title", "album", "artist", "year" };
 
 Node::Node(Track * newData)
 {
@@ -24,6 +24,11 @@ string Track::getMetadata(string metadataLabel)
 {
 	int index = indexOfThisMetadata(metadataLabel);
 	return metadataArr_[index];
+}
+
+string Track::getLocation(string location)
+{
+	return metadataArr_[1];
 }
 
 void Track::setMetadata(string metadataLabel, string data)

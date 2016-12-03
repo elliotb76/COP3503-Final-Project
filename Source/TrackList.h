@@ -1,6 +1,6 @@
 #pragma once
 //This is a symbolic global variable, it's a value that will be constant and so wont take up ram. Also remember to update it if you add something to the metadata array
-#define METADATA_SIZE 5
+#define METADATA_SIZE 6
 #include <string>
 using std::string;
 
@@ -19,6 +19,7 @@ public:
 	Track(string newMetadataArr[METADATA_SIZE]);
 
 	string getMetadata(string metadataLabel);
+	string getLocation(string location);
 	void setMetadata(string metadataLabel, string newData);
 	
 	int getTrackID() { return trackID_; }
