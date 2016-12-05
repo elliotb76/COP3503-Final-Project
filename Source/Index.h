@@ -9,6 +9,7 @@ using namespace std;
 
 class Index
 {
+	const string ext;
 	string trackIndexLocation_;
 	string tracklistIndexLocation_;
 	vector<string> directories_;
@@ -17,11 +18,15 @@ class Index
 
 public:
 	Index();
-	void initiateIndexFromConfig();
-	void writeFieldsToConfig();
+	~Index();
+
+	void InitiateIndexFromConfig();
+	void WriteFieldsToConfig();
 
 	void AddDirectory(string newDirectory) { directories_.push_back(newDirectory); }
-	void RemoveDirectory(string rmDirectory);
+	string GetDirectory(int index) { return directories_.at(index); }
+	int GetDirectorySize() { return directories_.size(); }
+	void DeleteDirectory(string rmDirectory);
 
 	TrackList* ReadMainIndex();
 	vector<TrackList> ReadTrackListIndex();
@@ -30,6 +35,12 @@ public:
 	void WriteTrackIndex();
 	void UpdateTrackIndex();
 
-	TrackList TrackListFromIDList(vector<int> );
+	vector<string> GetAllEntries();
 
+	bool isInVector(string input, vector<string> vector);
+
+	TrackList TrackListFromIDList(vector<int> idList, string name);
+
+
+	int q = 0;
 };

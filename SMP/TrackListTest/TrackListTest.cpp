@@ -6,9 +6,12 @@
 #include<Windows.h>
 #include <Mmsystem.h>
 #include <mciapi.h>
+#include <boost/filesystem.hpp>
 using namespace std;
 #pragma comment(lib, "Winmm.lib")
+
 #include "..\..\Source\TrackList.cpp"
+#include "..\..\Source\Index.cpp"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -127,14 +130,14 @@ namespace TrackListTest
 
 		TEST_METHOD(SetMetadata_ChangeMetadata_MetadataIsChanged)
 		{
-			string metadataArr[5] = { "1","2","3","4","5" };
+			string metadataArr[METADATA_SIZE] = { "1","2","3","4","5", "6" };
 			Track testTrack = Track(metadataArr);
 
-			Assert::AreEqual(testTrack.getMetadata("address"), string("2"));
+			Assert::AreEqual(testTrack.getMetadata("location"), string("2"));
 
-			testTrack.setMetadata("address", "7");
+			testTrack.setMetadata("location", "7");
 
-			Assert::AreEqual(testTrack.getMetadata("address"), string("7"));
+			Assert::AreEqual(testTrack.getMetadata("location"), string("7"));
 		}
 
 		TEST_METHOD(IndexOfThisMetadata_FindIndexOfThisMetadata_MetadataIndexIsCorrect)
@@ -154,13 +157,126 @@ namespace TrackListTest
 			ostringstream os;
 			os << "open \"" << locationOfMusic << "\" type MPEGvideo alias song1";
 
-			wstring fullInput = s2ws(os.str());
+			string fullInput = os.str();
 
-			LPCWSTR a = fullInput.c_str();
+			LPCSTR a = fullInput.c_str();
 			mciSendString(a, NULL, 0, NULL);
 			int error2;
-			LPCWSTR b = L"play song1";
+			LPCSTR b = "play song1";
 			error2 = mciSendString(b, NULL, 0, NULL);
 		}
+	};
+
+	TEST_CLASS(IndexTesting)
+	{
+	public:
+		TEST_METHOD(IndexConstructor_CanInitiate_NoError)
+		{
+			Index testIndex;			
+		}
+
+		TEST_METHOD(AddDirectory_CanAddDirectory_DirectoryIsSameAsInputAndSizeGoesUp)
+		{
+			remove(CONFIG_FILE);
+
+			Index testIndex;
+			testIndex.AddDirectory("test0");
+			testIndex.AddDirectory("test1");
+			testIndex.AddDirectory("test2");
+
+			//Assert::AreEqual(string("test1"), testIndex.GetDirectory(1));
+			Assert::IsTrue(testIndex.GetDirectorySize() == 3);
+
+		}
+
+		TEST_METHOD(DeleteDirectory_DirectoryIsSameAsThirdInputAndSizeGoesDown)
+		{
+			remove(CONFIG_FILE);
+
+			Index testIndex;
+			testIndex.AddDirectory("test0");
+			testIndex.AddDirectory("test1");
+			testIndex.AddDirectory("test2");
+
+			testIndex.DeleteDirectory("test1");
+
+			Assert::AreEqual(string("test2"), testIndex.GetDirectory(1));
+			Assert::IsTrue(testIndex.GetDirectorySize() == 2);
+		}
+
+		TEST_METHOD(WriteFieldsToConfig_CanWriteInitialState_NoError)
+		{
+			remove(CONFIG_FILE);
+
+			Index testIndex;
+
+			testIndex.AddDirectory("test0");
+			testIndex.AddDirectory("test1");
+			testIndex.AddDirectory("test2");
+		}
+
+		TEST_METHOD(InitiateIndexFromConfig_CanReadInitialState_InititatesAccordingToFile)
+		{
+			remove(CONFIG_FILE);
+
+			if (true)
+			{
+				Index testIndex;
+
+				testIndex.AddDirectory("test0");
+				testIndex.AddDirectory("test1");
+				testIndex.AddDirectory("test2");
+			}
+
+			Index testIndex;
+
+			Assert::AreEqual(string("test1"), testIndex.GetDirectory(1));
+			Assert::IsTrue(testIndex.GetDirectorySize() == 3);
+
+		}
+
+		TEST_METHOD(WriteTrackList_CanWriteToTextFile_NoError)
+		{
+			remove(CONFIG_FILE);
+
+			Index testIndex;
+
+			vector<TrackList> in;
+			in.push_back(TrackList("test0"));
+			in.push_back(TrackList("test1"));
+			in.push_back(TrackList("test2"));
+
+			testIndex.WriteTrackListIndex(in);
+		}
+
+		TEST_METHOD(ReadTrackList_CanReadFromTextFile_IsCorrect)
+		{
+			remove(CONFIG_FILE);
+
+			Index testIndex;
+
+			vector<TrackList> in;
+			in.push_back(TrackList("test0"));
+			in.push_back(TrackList("test1"));
+			in.push_back(TrackList("test2"));
+
+			testIndex.WriteTrackListIndex(in);
+
+			vector<TrackList> out = testIndex.ReadTrackListIndex();
+
+			Assert::AreEqual(in[1].name, out[1].name);
+
+		};
+
+		TEST_METHOD(ReadDirectoryContents_CanReadFromGivenDirectories_AnyOutput)
+		{
+			Index testIndex;
+
+			testIndex.AddDirectory("C:\\Users\\Centurion\\Desktop\\test");
+
+			vector<string> mp3 = testIndex.GetAllEntries();
+
+			Assert::IsTrue(mp3.size() == 1);
+		};
 	};
 }
